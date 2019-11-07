@@ -28,7 +28,7 @@ public==2018.11.20
 pygame==1.9.4
 PyMySQL==0.9.3
 pytz==2018.7
-PyYAML==3.13
+PyYAML==5.1
 query-string==2018.11.20
 request==2018.11.20
 requests==2.21.0
