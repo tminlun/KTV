@@ -1,0 +1,74 @@
+{% extends 'title_base.html' %}
+{% load static %}
+
+{% block title_extends %}选择套餐{% endblock %}
+{% block headline %}选择套餐 {% endblock %}
+
+{% block head_extends %}
+    <link rel="stylesheet" href="{% static 'css/pack.css' %}">
+{% endblock %}
+
+{% block title_conten %}
+
+    <div class="col-md-offset-2 col-md-8">
+
+            <div class="col-sm-12" style="margin: 10px 0;">
+                <div class="form-group"  style="overflow:hidden;">
+                    <label style="position:relative;top: 5px;" for="exampleInputName2" class="col-sm-1 control-label">号码</label>
+                    <div class="col-sm-4">
+                        <input type="text" required name="mobile" class="form-control" id="mobile" placeholder="请填写手机号码">
+                    </div>
+                  </div>
+            </div>
+
+            <ul class="list-group">
+                {% for room_package in room_packages %}
+                        {# 套餐 #}
+                      <li class="list-group-item" style="overflow: hidden;">
+                          <label class="radio-inline pack_left" style="vertical-align:middle;">
+                              <input type="radio" required name="room_package" id="room_package_{{ room_package.pk }}" value="{{ room_package.pk }}">
+                          </label>
+                          <span class="" style="margin-left: 20px;">{{ room_package.name }}</span>
+                          <span class="pack_right">{{ room_package.price }}元</span>
+                      </li>
+                {% empty %}
+                    <li class="list-group-item">暂无套餐</li>
+                {% endfor %}
+            </ul>
+
+            <button type="submit" class="btn btn-danger" onclick="order_ajax()">预定</button>
+
+    </div>
+
+{% endblock %}
+{% block custom_js %}
+    <script type="text/javascript">
+        // 添加订单
+        function order_ajax() {
+            // 获取redio选中的值
+            var room_package = $("input[name='room_package']:checked").val();
+            var mobile = $("#mobile").val();
+
+            $.ajax({
+                cache: false,
+                type: "POST",
+                url:"{% url 'order_ajax' %}",
+                data: {
+                    "room_package": room_package,
+                    "mobile": mobile,
+                },
+                async: true,
+                beforeSend:function(xhr, settings){
+                    xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+                },
+                success: function(data) {
+                    alert(data.msg);  // 提示
+                    if(data.status == 200){
+                        window.location.href="http://127.0.0.1:8000/order_list/";
+                    }
+                },
+            });
+        }
+    </script>
+{% endblock %}
+

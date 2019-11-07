@@ -1,0 +1,153 @@
+{% extends 'title_base.html' %}
+{% load static %}
+
+{% block title_extends %}订单列表{% endblock %}
+{% block headline %}订单列表 {% endblock %}
+
+{% block head_extends %}{% endblock %}
+
+{% block title_conten %}
+    <div class="col-md-offset-2 col-md-8">
+                <div class="panel panel-default">
+                  <!-- Default panel contents -->
+                  <div class="panel-heading">订单</div>
+
+                  <!-- Table -->
+                  <table class="table" id="scenic-table">
+                    <thead>
+                      <tr>
+                        <th>#</th>
+                        <th>订单号</th>
+                        <th>价格</th>
+                        <th>房型</th>
+                        <th>状态</th>
+                        <th>付款</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                    {% for order in orders %}
+                        <tr>
+                            <th scope="row">{{ forloop.counter }}</th>
+                            <td>
+                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal" onclick="scenic_detail({{ order.pk }})">
+                                    {{ order.order_sn }}
+                                </button>
+                            </td>
+                            <td>{{ order.order_mount }}￥</td>
+                            <td>{{ order.order_room.first.room_package.name }}</td>
+                            <td>
+                                <button type="button" class="btn btn-danger" data-toggle="modal" onclick="del_order({{ order.pk }})">
+                                    删除
+                                </button>
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-info" data-toggle="modal" onclick="">
+                                    支付
+                                </button>
+                            </td>
+                          </tr>
+                     {% empty %}
+                        <tr><td>没有数据</td></tr>
+                    {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+            </div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">景点详情</h4>
+      </div>
+      <div class="modal-body" style="overflow: hidden">
+          {# 标题 #}
+          <div id="title" style="float: left">
+              <p>房型</p>
+          </div>
+          {# 内容 #}
+          <div id="scenic_info" style="float: left;margin-left: 30px;">
+              <p></p>
+          </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block custom_js %}
+    <script type="text/javascript">
+
+        //删除订单
+        function del_order(order_pk) {
+            $.ajax({
+                cache: false,
+                type: "POST",
+                url:"{% url 'order_list' %}",
+                data: {"order_pk": order_pk},
+                async: true,
+                beforeSend:function(xhr, settings){
+                    xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+                },
+                success: function(data) {
+                    location.reload(true);  // 刷新页面
+                    alert(data.msg);  // 提示
+                },
+            });
+        }
+
+        // 订单详情
+        function scenic_detail(order_pk) {
+            $.ajax({
+            cache: false,
+            type: "GET",
+            url:"{% url 'order_detail' %}",
+            data: {"order_pk": order_pk},
+            async: true,
+            beforeSend:function(xhr, settings){
+                xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+            },
+
+            success: function(ret) {
+                console.log(ret);
+
+
+                var status  = ret.status;// 状态
+                if(status === 500){
+                    var str = "<p>暂无房型</p>";
+                    var scenic_infos = "";
+
+                    var title = document.getElementById('title');
+                    var scenic_info = document.getElementById('scenic_info');
+
+                    title.innerHTML = str;
+                    scenic_info.innerHTML = scenic_infos;
+
+                }else{
+                    // 定义变量
+                    var room_name = ret.room_name; // 数据
+                    var str_info = "";
+                    var str_title = "";
+                    var scenic_title = document.getElementById('title');
+                    var scenic_detail = document.getElementById('scenic_info');
+
+                    // 动态添加HTML数据
+                    str_title = str_title + "<p>房型</p>";
+                    str_info = str_info + "<p>" + room_name + "</p>";
+
+                    scenic_title.innerHTML = str_title;
+                    scenic_detail.innerHTML = str_info;
+                }
+
+            },
+        });
+        }
+    </script>
+{% endblock %}

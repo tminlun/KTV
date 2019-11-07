@@ -1,0 +1,57 @@
+{% extends 'title_base.html' %}
+{% load static %}
+
+{% block title_extends %}预定房间{% endblock %}
+{% block headline %}预定房间 {% endblock %}
+
+{% block head_extends %}
+
+{% endblock %}
+
+{% block title_conten %}
+
+
+    <div class="col-md-offset-3 col-md-8" style="margin-top: 20px;">
+        <form class="form-horizontal" action="{% url 'reserve_room' %}" method="post">
+            {% csrf_token %}
+             <ul class="nav nav-tabs">
+                 {% for room_date in room_dates %}
+                  <li role="presentation" class="{% ifequal room_date.pk date_pk %}active{% endifequal %}"><a href="?room_date_pk={{ room_date.pk }}">{{ room_date.date|date:"m-d" }}</a></li>
+{#                  <li role="presentation"><a href="#">11-05</a></li>#}
+                 {% empty %}
+                     <li role="presentation">暂无日期</li>
+                 {% endfor %}
+             </ul>
+
+          <div class="form-group" style="margin-top: 20px;">
+            <label for="inputEmail3" class="col-sm-2 control-label">房型</label>
+            <div class="col-sm-6">
+
+              <select class="form-control" name="private_room_pk">
+                  {% for private_room in private_rooms %}
+                    <option value="{{ private_room.pk }}">{{ private_room.name }}</option>
+                  {% empty %}
+                      <option value="">暂无房型</option>
+                  {% endfor %}
+                </select>
+            </div>
+          </div>
+
+
+{#          <div class="form-group">#}
+{#            <label for="inputPassword3" class="col-sm-2 control-label">价格</label>#}
+{#            <div class="col-sm-3">#}
+{#              <input class="form-control" id="disabledInput" type="text" placeholder="100" disabled>#}
+                {# document.getElementById("disabledInput").placeholder = '100'; #}
+{#            </div>#}
+
+          <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+{#                ?room_pk=#}
+            <button type="submit" class="btn btn-default">下一步</button>
+            </div>
+          </div>
+        </form>
+    </div>
+{% endblock %}
+

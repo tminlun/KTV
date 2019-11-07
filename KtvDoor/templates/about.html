@@ -1,0 +1,42 @@
+{% extends 'title_base.html' %}
+{% load static %}
+
+{% block title_extends %}关于我们{% endblock %}
+{% block headline %}关于我们 {% endblock %}
+
+{% block head_extends %}
+
+{% endblock %}
+
+{% block title_conten %}
+{#            分类#}
+            <div class="col-md-offset-4 col-md-5">
+                <ul class="nav nav-tabs">
+                    {% if about_types %}
+                        {% for about_type in about_types %}
+                            <li role="presentation" class="{% ifequal about_type.pk about_type_pk %}active{% endifequal %}"><a href="?about_type_pk={{ about_type.pk }}">{{ about_type.name }}</a></li>
+                        {% empty %}
+                            <li role="presentation"><a href="#">暂无历程</a></li>
+                        {% endfor %}
+                    {% else %}
+                        <li role="presentation"><a href="#">暂无历程</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+
+{#            介绍#}
+            <div class="col-md-12" style="font-family: Microsoft Yahei,Arial,Verdana,sans-serif; color: #707070;line-height: normal;word-wrap: break-word;
+    word-break: break-all;
+    font-size: 16px;">
+                <div class="panel panel-default">
+                  <div class="panel-body">
+                      {% if about %}
+                      {{ about.detail }}
+                      {% else %}
+                          <p>暂无描述</p>
+                      {% endif %}
+                  </div>
+                </div>
+            </div>
+
+{% endblock %}

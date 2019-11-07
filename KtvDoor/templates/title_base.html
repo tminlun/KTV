@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block head_extends %}
+
+{% endblock %}
+
+{% block content %}
+<div class="container">
+        <div class="row">
+{#            标题#}
+            <div class="col-md-offset-4 col-md-4">
+                <div class="panel panel-default">
+                  <div class="panel-heading" style="text-align: center; color: #ff9c00;font-size: 24px;">{% block headline %} {% endblock %}</div>
+                  <div class="panel-body" style="text-align: center;color: #666;font-size: 14px;    font-family: 微软雅黑;">
+                    真诚、务实、创新、服务
+                  </div>
+                </div>
+            </div>
+
+    {% block title_conten %}
+    {% endblock %}
+        </div>
+</div>
+
+
+{% endblock %}

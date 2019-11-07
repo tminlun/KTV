@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title_extends %}首页{% endblock %}
+
+{% block head_extends %}
+    <link rel="stylesheet" href="{% static 'css/index.css' %}">
+    <script src="https://cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+{% endblock %}
+
+{% block content %}
+    <div class="wrap">
+    <div class="wrapper">
+        <div class="main">
+            <div class="containter">
+            <div class="row">
+                <div class="col-sm-4"></div>
+                <div class="col-sm-5">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">登录</h3>
+                        </div>
+                        <div class="panel-body">
+                            <form action="{% url 'login' %}" method="POST">
+                                {% csrf_token %}
+{#                                    <input type="hidden" name="next" value="{% if froms %}{{ froms }}{% else %}/{% endif %}">#}
+                                    <label for="id_username">账号</label>
+                                    <input type="text" name="username" class="form-control" placeholder="请输入用户名或邮箱" value="{{ login_form.username.value }}" required id="id_username" />
+                                    <p></p>
+                                    <label for="id_pwd">密码</label>
+                                    <input type="password" name="password" class="form-control" placeholder="请输入密码" value="{{ login_form.password.value }}" required id="id_pwd" />
+
+                                    <p class="text-danger"></p>
+                                    <label for="id_password">验证码</label>
+
+                                    {{login_form.captcha}}
+                                    <p class="text-danger"></p>
+                                    <span class="pull-left text-danger">{% if msg %}{{ msg }}{% endif %}{% for i,error in login_form.errors.items %}{{ error }}{% endfor %}</span>
+                                <input type="submit" value="登录" class="btn btn-primary pull-right">
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+    </div>
+{% endblock %}
+{% block custom_js %}
+<script type="text/javascript">
+//刷新验证码图片
+$(function(){
+    $("img.captcha").click(function(){   //更新验证码图片ajax
+        $.getJSON("/captcha/refresh",function(data){
+            $("img.captcha").attr("src",data.image_url);
+            $("#id_captcha_0").attr("value",data.key);
+        });
+    });
+});
+
+
+</script>
+{% endblock %}

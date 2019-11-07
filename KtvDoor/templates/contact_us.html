@@ -1,0 +1,46 @@
+{% extends 'title_base.html' %}
+{% load static %}
+
+{% block title_extends %}联系我们{% endblock %}
+{% block headline %}联系我们 {% endblock %}
+
+{% block head_extends %}
+
+{% endblock %}
+
+{% block title_conten %}
+    <div class="col-md-12">
+        <div class="panel panel-default">
+          <!-- Default panel contents -->
+          <div class="panel-heading">分店联系方式</div>
+
+          <!-- Table -->
+          <table class="table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>名称</th>
+                <th>地址</th>
+                <th>电话</th>
+              </tr>
+            </thead>
+            <tbody>
+            {% if contacts %}
+                {% for contact in contacts %}
+                  <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td>{{ contact.name }}</td>
+                    <td>{{ contact.address }}</td>
+                    <td>@{{ contact.phone }}</td>
+                  </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <th>暂无数据！</th>
+                </tr>
+            {% endif %}
+            </tbody>
+          </table>
+        </div>
+    </div>
+{% endblock %}
